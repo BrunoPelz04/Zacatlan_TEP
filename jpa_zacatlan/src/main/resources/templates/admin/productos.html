@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Productos')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h1 class="m-0">Productos</h1>
+        <a class="btn btn-primary" th:unless="${soloLectura}" th:href="@{/admin/productos/nuevo}">Nuevo producto</a>
+    </div>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+    <section class="card card-body">
+        <p th:if="${#lists.isEmpty(productos)}" class="mb-0">Todavía no hay productos. Crea el primero con «Nuevo producto».</p>
+        <th:block th:unless="${#lists.isEmpty(productos)}">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0" id="tabla-productos">
+                    <thead class="table-light"><tr><th>Nombre</th><th>Presentación</th><th class="text-end">Precio base</th><th>Vendedores</th><th>Estado</th><th></th></tr></thead>
+                    <tbody>
+                    <tr th:each="p : ${productos}">
+                        <td>
+                            <div class="fw-semibold" th:text="${p.nombre}">Producto</div>
+                            <div class="form-text m-0" th:text="${p.descripcion}">Descripción</div>
+                        </td>
+                        <td th:text="${p.presentacion}">1 pieza</td>
+                        <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(p.precioBase, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                        <td>
+                            <span th:if="${#lists.isEmpty(p.vendedorNombres)}" class="form-text m-0">Sin vendedores</span>
+                            <span th:each="n : ${p.vendedorNombres}" class="badge text-bg-light border me-1" th:text="${n}">Vendedor</span>
+                        </td>
+                        <td><span class="badge rounded-pill" th:classappend="${p.activo} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${p.activo} ? 'Disponible' : 'No disponible'">Disponible</span></td>
+                        <td><div class="d-flex flex-wrap justify-content-end gap-2" th:unless="${soloLectura}">
+                            <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/productos/{id}/editar(id=${p.id})}">Editar</a>
+                            <form method="post" th:action="@{/admin/productos/{id}/eliminar(id=${p.id})}"><button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button></form>
+                        </div></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </th:block>
+    </section>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

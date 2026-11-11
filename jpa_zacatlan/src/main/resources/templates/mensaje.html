@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Aviso')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <section class="card card-body">
+        <h1>No se pudo completar</h1>
+        <p th:text="${mensaje}">Mensaje</p>
+        <a class="btn btn-primary" th:href="@{/}">Volver al inicio</a>
+    </section>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

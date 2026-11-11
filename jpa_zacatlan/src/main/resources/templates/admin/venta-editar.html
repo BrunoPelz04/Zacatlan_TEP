@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Editar venta')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1 th:text="'Editar venta #' + ${venta.id}">Editar venta</h1>
+    <p class="lead text-body-secondary mb-4" th:text="${venta.vendedorNombre} + ', ' + ${venta.bloqueNombre} + ', ' + ${venta.fechaHoraTexto}">Vendedor</p>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <form class="card card-body" style="max-width: 36rem" method="post" th:action="@{/admin/ventas/{id}(id=${venta.id})}">
+        <div class="mb-3">
+            <label class="form-label" for="producto">Producto</label>
+            <select class="form-select" id="producto" name="productoId" required>
+                <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"
+                        th:selected="${p.id == venta.productoId}">Producto</option>
+            </select>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="precio">Precio unitario</label>
+            <input class="form-control" id="precio" name="precioUnitario" type="number"
+                   step="0.01" min="0" required th:value="${venta.precioUnitario}">
+        </div>
+        <div class="mb-4">
+            <label class="form-label" for="cantidad">Cantidad</label>
+            <input class="form-control" id="cantidad" name="cantidad" type="number"
+                   step="0.001" min="0.001" required th:value="${venta.cantidadTexto}">
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">Guardar cambios</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/ventas}">Cancelar</a>
+        </div>
+        <p class="form-text mt-3 mb-0">Este cambio quedará registrado en el historial con tu nombre.</p>
+    </form>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

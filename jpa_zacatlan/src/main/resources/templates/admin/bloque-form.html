@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Bloque')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1 class="mb-4" th:text="${bloque.id == null} ? 'Nuevo bloque' : 'Editar bloque'">Bloque</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+    <form class="card card-body zac-form" method="post" th:action="@{/admin/bloques}">
+        <input type="hidden" name="id" th:value="${bloque.id}">
+        <div class="mb-3">
+            <label class="form-label" for="nombre">Nombre</label>
+            <input class="form-control" id="nombre" name="nombre" type="text" maxlength="100" required th:value="${bloque.nombre}">
+        </div>
+        <div class="mb-4">
+            <label class="form-label" for="tipo">Tipo</label>
+            <select class="form-select" id="tipo" name="tipo" required>
+                <option value="" th:selected="${bloque.tipo == null}">Elige un tipo</option>
+                <option value="COMIDA" th:selected="${bloque.tipo == 'COMIDA'}">Comida</option>
+                <option value="TEXTIL" th:selected="${bloque.tipo == 'TEXTIL'}">Textil</option>
+                <option value="ARTESANAL" th:selected="${bloque.tipo == 'ARTESANAL'}">Artesanal</option>
+            </select>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/bloques}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

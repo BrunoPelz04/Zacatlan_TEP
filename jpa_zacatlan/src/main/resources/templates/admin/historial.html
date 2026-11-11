@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Historial')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1 class="mb-4">Historial de acciones</h1>
+    <section class="card card-body">
+        <p th:if="${#lists.isEmpty(acciones)}" class="mb-0">Todavía no hay acciones registradas.</p>
+        <div th:unless="${#lists.isEmpty(acciones)}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>Acción</th><th>Fecha</th><th>Administrador</th><th>Venta</th><th>Qué se hizo</th></tr></thead>
+                <tbody>
+                <tr th:each="a : ${acciones}">
+                    <td th:text="${a.id}">1</td>
+                    <td th:text="${a.cuando}">01/01/2026 10:00</td>
+                    <td th:text="${a.autor}">Administrador</td>
+                    <td th:text="'#' + ${a.ventaId}">#1</td>
+                    <td th:text="${a.descripcion}">Descripción</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

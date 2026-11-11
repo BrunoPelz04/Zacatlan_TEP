@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Iniciar sesión')}"></head>
+<body>
+<div class="row g-0 min-vh-100">
+
+    <aside class="col-md-5 zac-login-panel d-flex flex-column align-items-center justify-content-center text-center p-4 p-md-5">
+        <h1 class="text-white">Gobierno del Estado de Zacatlán</h1>
+        <p class="mb-0 text-white-50">Registro de las ventas diarias.</p>
+    </aside>
+
+    <main class="col-md-7 d-flex align-items-center justify-content-center p-4">
+        <form class="w-100" style="max-width: 24rem" method="post" th:action="@{/login}" novalidate>
+            <h2 class="mb-4">Iniciar sesión</h2>
+
+            <div th:if="${aviso}" class="alert alert-info" role="status" th:text="${aviso}"></div>
+            <div th:if="${error}" class="alert alert-danger" role="alert" th:text="${error}"></div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">Correo</label>
+                <input type="email" class="form-control" id="email" name="email"
+                       th:value="${email}" autocomplete="username" required autofocus>
+            </div>
+            <div class="mb-4">
+                <label for="password" class="form-label">Contraseña</label>
+                <input type="password" class="form-control" id="password" name="password"
+                       autocomplete="current-password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+        </form>
+    </main>
+
+</div>
+</body>
+</html>

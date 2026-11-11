@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Vendedores')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+        <h1 class="m-0">Vendedores</h1>
+        <a class="btn btn-primary" th:href="@{/admin/vendedores/nuevo}">Nuevo vendedor</a>
+    </div>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+    <section class="card card-body">
+        <p th:if="${#lists.isEmpty(vendedores)}" class="mb-0">Todavía no hay vendedores. Crea el primero con «Nuevo vendedor».</p>
+        <div th:unless="${#lists.isEmpty(vendedores)}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>Nombre</th><th>Correo</th><th>Bloque</th><th>Estado</th><th></th></tr></thead>
+                <tbody>
+                <tr th:each="v : ${vendedores}">
+                    <td th:text="${v.nombre}">Vendedor</td>
+                    <td th:text="${v.email}">correo</td>
+                    <td th:text="${v.bloqueNombre}">Bloque</td>
+                    <td><span class="badge rounded-pill" th:classappend="${v.activo} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${v.activo} ? 'Activo' : 'Desactivado'">Activo</span></td>
+                    <td><div class="d-flex flex-wrap justify-content-end gap-2">
+                        <a class="btn btn-sm btn-outline-primary" th:href="@{/admin/vendedores/{id}/editar(id=${v.id})}">Editar</a>
+                        <form method="post" th:action="@{/admin/vendedores/{id}/estado(id=${v.id})}">
+                            <input type="hidden" name="activo" th:value="${!v.activo}">
+                            <button type="submit" class="btn btn-sm btn-outline-primary" th:text="${v.activo} ? 'Desactivar' : 'Activar'">Desactivar</button>
+                        </form>
+                        <form method="post" th:action="@{/admin/vendedores/{id}/eliminar(id=${v.id})}"><button type="submit" class="btn btn-sm btn-outline-danger">Eliminar</button></form>
+                    </div></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

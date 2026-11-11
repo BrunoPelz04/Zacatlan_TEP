@@ -1,0 +1,100 @@
+/* Paleta tomada de la portada del PDF del proyecto.
+   Bootstrap 5.3 hace el trabajo pesado (rejilla, tarjetas, tablas, botones, alertas, badges);
+   aquí solo se ajusta su paleta y se dejan los pocos estilos propios. */
+:root {
+    --zac-navy: #0B2A6F;
+    --zac-navy-dark: #081F55;
+    --zac-teal: #34ABA0;
+    --zac-teal-dark: #1F7E75;
+    --zac-marigold: #F28C1B;
+    --zac-mist: #F2F7F6;
+    --zac-ink: #172033;
+
+    --bs-primary: var(--zac-navy);
+    --bs-primary-rgb: 11, 42, 111;
+    --bs-success: #1F7E75;
+    --bs-success-rgb: 31, 126, 117;
+    --bs-body-color: var(--zac-ink);
+    --bs-body-bg: var(--zac-mist);
+    --bs-link-color: var(--zac-navy);
+    --bs-link-color-rgb: 11, 42, 111;
+    --bs-link-hover-color: var(--zac-teal-dark);
+    --bs-link-hover-color-rgb: 31, 126, 117;
+    --bs-body-font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --bs-body-font-size: 1.0625rem;
+    --bs-border-color: #D5E1DF;
+    --bs-border-radius: .5rem;
+}
+
+h1, h2, h3, .navbar-brand {
+    font-family: "Archivo", "Segoe UI", system-ui, sans-serif;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--zac-navy);
+}
+h1 { font-size: 2rem; }
+h2 { font-size: 1.375rem; }
+
+/* Botones y formularios: mismo tamaño táctil de siempre */
+.btn { --bs-btn-font-weight: 600; min-height: 3rem; display: inline-flex; align-items: center; justify-content: center; }
+.btn-sm { min-height: 2.75rem; }
+.form-control, .form-select { min-height: 3rem; }
+.form-label { font-weight: 600; }
+.btn-primary {
+    --bs-btn-bg: var(--zac-navy);
+    --bs-btn-border-color: var(--zac-navy);
+    --bs-btn-hover-bg: var(--zac-navy-dark);
+    --bs-btn-hover-border-color: var(--zac-navy-dark);
+    --bs-btn-active-bg: var(--zac-navy-dark);
+    --bs-btn-active-border-color: var(--zac-navy-dark);
+    --bs-btn-disabled-bg: var(--zac-navy);
+    --bs-btn-disabled-border-color: var(--zac-navy);
+}
+.btn-outline-primary {
+    --bs-btn-color: var(--zac-navy);
+    --bs-btn-border-color: var(--zac-navy);
+    --bs-btn-hover-bg: var(--zac-navy);
+    --bs-btn-hover-border-color: var(--zac-navy);
+    --bs-btn-active-bg: var(--zac-navy-dark);
+    --bs-btn-active-border-color: var(--zac-navy-dark);
+}
+.form-control:focus, .form-select:focus, .btn:focus-visible, .nav-link:focus-visible {
+    border-color: var(--zac-teal);
+    box-shadow: 0 0 0 .25rem rgba(52, 171, 160, .35);
+}
+.form-check-input:checked { background-color: var(--zac-navy); border-color: var(--zac-navy); }
+
+/* Tarjetas y tablas de Bootstrap con la medida de la casa */
+.card { --bs-card-spacer-y: 1.5rem; --bs-card-spacer-x: 1.5rem; --bs-card-border-color: #D5E1DF; }
+.card h2 { margin-bottom: 1rem; }
+.table { --bs-table-hover-bg: rgba(52, 171, 160, .08); }
+.table > thead { --bs-table-bg: transparent; color: #5B6475; }
+.table > thead th { font-weight: 400; white-space: nowrap; }
+.table > tfoot { --bs-table-bg: transparent; --bs-table-border-color: var(--zac-navy); }
+.progress { --bs-progress-height: 10px; --bs-progress-bg: #E3ECEA; --bs-progress-bar-bg: var(--zac-teal); }
+
+/* Barra superior */
+.zac-nav { background: var(--zac-navy); border-bottom: 4px solid var(--zac-teal); }
+.zac-nav .navbar-brand { color: #fff; }
+.zac-nav .nav-link.active { font-weight: 600; box-shadow: inset 0 -3px 0 var(--zac-marigold); }
+.zac-nav .dropdown-item.active, .zac-nav .dropdown-item:active { background: var(--zac-navy); }
+/* Menú «Catálogos» sin JavaScript: se abre al pasar el cursor o al enfocarlo con teclado/toque */
+.zac-nav .dropdown:hover > .dropdown-menu,
+.zac-nav .dropdown:focus-within > .dropdown-menu { display: block; margin-top: 0; }
+
+.zac-main { padding-top: 2.5rem; padding-bottom: 3rem; max-width: 72rem; }
+.zac-form { max-width: 36rem; }
+
+/* Cifras grandes (no existen en Bootstrap) */
+.zac-total { font-family: "Archivo", "Segoe UI", system-ui, sans-serif; font-size: 2.25rem; color: var(--zac-navy); }
+.zac-big { font-family: "Archivo", "Segoe UI", system-ui, sans-serif; font-size: 3rem; color: var(--zac-navy); }
+
+/* Login */
+.zac-login-panel { background: var(--zac-navy); color: #fff; }
+
+/* Lista de ventas de hoy: ventana con scroll propio, encabezado fijo */
+.zac-scroll { max-height: 22rem; overflow-y: auto; border: 1px solid var(--bs-border-color); border-radius: var(--bs-border-radius); background: #fff; }
+.zac-scroll .table > thead th { position: sticky; top: 0; z-index: 2; background-color: #E8F0EE; }
+
+/* Lista de vendedores del formulario de producto */
+.zac-vend-list { max-height: 14rem; overflow-y: auto; }

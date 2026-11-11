@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Producto')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1 class="mb-4" th:text="${producto.id == null} ? 'Nuevo producto' : 'Editar producto'">Producto</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+    <form class="card card-body zac-form" method="post" th:action="@{/admin/productos}">
+        <input type="hidden" name="id" th:value="${producto.id}">
+        <div class="mb-3">
+            <label class="form-label" for="nombre">Nombre</label>
+            <input class="form-control" id="nombre" name="nombre" type="text" maxlength="100" required th:value="${producto.nombre}">
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="descripcion">Descripción</label>
+            <input class="form-control" id="descripcion" name="descripcion" type="text" maxlength="255" th:value="${producto.descripcion}">
+        </div>
+        <div class="row g-3 mb-3">
+            <div class="col-6">
+                <label class="form-label" for="cantidad">Cantidad</label>
+                <input class="form-control" id="cantidad" name="cantidad" type="number" step="0.001" min="0.001" required th:value="${producto.cantidad}">
+            </div>
+            <div class="col-6">
+                <label class="form-label" for="unidadMedida">Unidad de medida</label>
+                <select class="form-select" id="unidadMedida" name="unidadMedida" required>
+                    <option value="" th:selected="${producto.unidadMedida == null}">Elige una unidad</option>
+                    <option th:each="u : ${unidades}" th:value="${u}" th:text="${u}"
+                            th:selected="${u == producto.unidadMedida}">pieza</option>
+                </select>
+            </div>
+            <div class="col-12"><p class="form-text m-0">Lo que contiene o mide el producto, por ejemplo 750 ml, 1 kg o 1 pieza.</p></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" for="precioBase">Precio base</label>
+            <input class="form-control" id="precioBase" name="precioBase" type="number" step="0.01" min="0" required th:value="${producto.precioBase}">
+            <p class="form-text mt-2 mb-0">Es el precio inicial; el vendedor puede cambiarlo al momento de la venta.</p>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" id="etq-vendedores">Vendedores que lo venden</label>
+            <div class="zac-vend-list border rounded p-2 bg-white" role="group" aria-labelledby="etq-vendedores">
+                <div class="form-check zac-vend-item py-1" th:each="v : ${vendedores}">
+                    <input class="form-check-input" type="checkbox" name="vendedorIds" th:id="'vend' + ${v.id}"
+                           th:value="${v.id}" th:checked="${producto.vendedorIds.contains(v.id)}">
+                    <label class="form-check-label" th:for="'vend' + ${v.id}">
+                        <span th:text="${v.nombre}">Vendedor</span>
+                        <span class="form-text m-0" th:text="'· ' + ${v.bloqueNombre} + (${v.activo} ? '' : ' · desactivado')">· Bloque</span>
+                    </label>
+                </div>
+            </div>
+            <p class="form-text mt-2 mb-0">Solo los vendedores marcados verán este producto al registrar ventas.</p>
+        </div>
+        <div class="form-check mb-4">
+            <input class="form-check-input" id="activo" name="activo" type="checkbox" value="true" th:checked="${producto.activo}">
+            <label class="form-check-label" for="activo">Disponible para vender</label>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">Guardar</button>
+            <a class="btn btn-outline-primary" th:href="@{/admin/productos}">Cancelar</a>
+        </div>
+    </form>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

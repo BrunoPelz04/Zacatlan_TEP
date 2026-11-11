@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Nueva venta')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1>Nueva venta</h1>
+    <p class="lead text-body-secondary mb-4" th:text="${session.sesion.bloque}">Bloque</p>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <section class="card card-body mb-4">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h2 class="mb-1">Ventas del día</h2>
+                <p class="mb-0" th:if="${jornada.sinIniciar}">Todavía no inicias. Presiona «Iniciar ventas del día» para poder registrar ventas.</p>
+                <p class="mb-0" th:if="${jornada.abierta}">Iniciaste a las <strong th:text="${jornada.inicioTexto}">09:00</strong>. Cuando termines, cierra el día.</p>
+                <p class="mb-0" th:if="${jornada.cerrada}">Iniciaste a las <strong th:text="${jornada.inicioTexto}">09:00</strong> y terminaste a las <strong th:text="${jornada.finTexto}">15:00</strong>. Ya no se pueden agregar ventas hoy.</p>
+            </div>
+            <form th:if="${jornada.sinIniciar}" method="post" th:action="@{/vendedor/jornada/iniciar}">
+                <button type="submit" class="btn btn-primary">Iniciar ventas del día</button>
+            </form>
+            <form th:if="${jornada.abierta}" method="post" th:action="@{/vendedor/jornada/terminar}">
+                <button type="submit" class="btn btn-outline-danger">Terminar ventas del día</button>
+            </form>
+        </div>
+    </section>
+
+    <div class="row g-4 align-items-start">
+        <div class="col-lg-6">
+            <form class="card card-body" method="post" th:action="@{/vendedor/ventas}">
+                <fieldset th:disabled="${!jornada.abierta}">
+                    <p th:if="${#lists.isEmpty(productos)}" class="form-text">No tienes productos asignados. Pide a un administrador que te asigne productos.</p>
+                    <div class="mb-3">
+                        <label class="form-label" for="producto">Producto</label>
+                        <select class="form-select" id="producto" name="productoId" required>
+                            <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre + ' (' + p.presentacion + ') – $' + #numbers.formatDecimal(p.precioBase, 1, 'COMMA', 2, 'POINT')}">Producto</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="precio">Precio unitario</label>
+                        <input class="form-control" id="precio" name="precioUnitario" type="number"
+                               step="0.01" min="0" required>
+                        <p class="form-text mt-2 mb-0">El precio base de cada producto aparece junto a su nombre.
+                           Escribe otro si negociaste un precio distinto.</p>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label" for="cantidad">Cantidad</label>
+                        <input class="form-control" id="cantidad" name="cantidad" type="number"
+                               step="0.001" min="0.001" value="1" required>
+                        <p class="form-text mt-2 mb-0">Puedes usar decimales, por ejemplo 1.5 para kilo y medio.</p>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Registrar venta</button>
+                </fieldset>
+                <p class="form-text mt-3 mb-0" th:if="${jornada.sinIniciar}">El formulario se activa al iniciar tus ventas del día.</p>
+                <p class="form-text mt-3 mb-0" th:if="${jornada.cerrada}">Cerraste tus ventas de hoy; el formulario ya no está disponible.</p>
+            </form>
+        </div>
+
+        <div class="col-lg-6">
+            <section class="card card-body">
+                <h2>Tus ventas de hoy</h2>
+                <p th:if="${#lists.isEmpty(ventas)}" class="mb-0">Todavía no registras ventas hoy. Tu primera venta aparecerá aquí.</p>
+                <div th:unless="${#lists.isEmpty(ventas)}">
+                    <div class="zac-scroll" tabindex="0" role="region" aria-label="Ventas de hoy, la más reciente arriba">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="table-light"><tr><th>Hora</th><th>Producto</th><th>Cant.</th><th class="text-end">Total</th></tr></thead>
+                            <tbody>
+                            <tr th:each="v : ${ventas}">
+                                <td th:text="${v.hora}">10:15</td>
+                                <td th:text="${v.productoNombre}">Producto</td>
+                                <td th:text="${v.cantidadTexto}">1</td>
+                                <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(v.total, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-between fw-bold border-top border-primary pt-3 mt-2">
+                        <span>Total del día</span>
+                        <span th:text="'$' + ${#numbers.formatDecimal(totalDia, 1, 'COMMA', 2, 'POINT')}">$0.00</span>
+                    </div>
+                </div>
+                <a th:unless="${#lists.isEmpty(ventas)}" class="btn btn-outline-primary mt-3"
+                   th:href="@{/vendedor/ventas/pdf}">Descargar reporte del día (PDF)</a>
+                <p class="form-text mt-3 mb-0">Una venta registrada no se puede cambiar. Si te equivocas, avisa a un administrador.</p>
+            </section>
+        </div>
+    </div>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>

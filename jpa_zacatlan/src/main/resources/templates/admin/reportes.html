@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/layout :: head('Reportes')}"></head>
+<body>
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+<main class="container zac-main">
+    <h1 class="mb-4">Reportes de ventas</h1>
+    <div th:replace="~{fragments/layout :: avisos}"></div>
+
+    <form class="card card-body mb-4" method="get" th:action="@{/admin/reportes}">
+        <div class="row g-3 mb-3">
+            <div class="col-6 col-lg">
+                <label class="form-label" for="desde">Desde</label>
+                <input class="form-control" id="desde" name="desde" type="date" th:value="${desde}">
+            </div>
+            <div class="col-6 col-lg">
+                <label class="form-label" for="hasta">Hasta</label>
+                <input class="form-control" id="hasta" name="hasta" type="date" th:value="${hasta}">
+            </div>
+            <div class="col-6 col-lg">
+                <label class="form-label" for="bloqueId">Bloque</label>
+                <select class="form-select" id="bloqueId" name="bloqueId">
+                    <option value="">Todos</option>
+                    <option th:each="b : ${bloques}" th:value="${b.id}" th:text="${b.nombre}"
+                            th:selected="${bloqueId != null and bloqueId == b.id}">Bloque</option>
+                </select>
+            </div>
+            <div class="col-6 col-lg">
+                <label class="form-label" for="vendedorId">Vendedor</label>
+                <select class="form-select" id="vendedorId" name="vendedorId">
+                    <option value="">Todos</option>
+                    <option th:each="v : ${vendedores}" th:value="${v.id}" th:text="${v.nombre}"
+                            th:selected="${vendedorId != null and vendedorId == v.id}">Vendedor</option>
+                </select>
+            </div>
+            <div class="col-12 col-lg">
+                <label class="form-label" for="productoId">Producto</label>
+                <select class="form-select" id="productoId" name="productoId">
+                    <option value="">Todos</option>
+                    <option th:each="p : ${productos}" th:value="${p.id}" th:text="${p.nombre}"
+                            th:selected="${productoId != null and productoId == p.id}">Producto</option>
+                </select>
+            </div>
+        </div>
+        <div class="d-flex flex-wrap gap-2">
+            <button type="submit" class="btn btn-primary">Ver reporte</button>
+            <a class="btn btn-outline-primary"
+               th:href="@{/admin/reportes/pdf(desde=${desde},hasta=${hasta},bloqueId=${bloqueId},vendedorId=${vendedorId},productoId=${productoId})}">Descargar PDF</a>
+        </div>
+    </form>
+
+    <section class="card card-body">
+        <p th:if="${#lists.isEmpty(reporte.filas)}" class="mb-0">No hay ventas en este periodo. Prueba con otras fechas o quita algún filtro.</p>
+        <div th:unless="${#lists.isEmpty(reporte.filas)}" class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>Fecha y hora</th><th>Bloque</th><th>Vendedor</th><th>Producto</th><th>Cant.</th><th>Precio</th><th class="text-end">Total</th></tr></thead>
+                <tbody>
+                <tr th:each="v : ${reporte.filas}">
+                    <td th:text="${v.fechaHoraTexto}">01/01/2026 10:00</td>
+                    <td th:text="${v.bloqueNombre}">Bloque</td>
+                    <td th:text="${v.vendedorNombre}">Vendedor</td>
+                    <td th:text="${v.productoNombre}">Producto</td>
+                    <td th:text="${v.cantidadTexto}">1</td>
+                    <td th:text="'$' + ${#numbers.formatDecimal(v.precioUnitario, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                    <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(v.total, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                </tr>
+                </tbody>
+                <tfoot class="table-group-divider fw-bold"><tr>
+                    <td colspan="6" th:text="${reporte.totalVentas} + (${reporte.totalVentas == 1} ? ' venta' : ' ventas')">0 ventas</td>
+                    <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(reporte.totalMonto, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
+                </tr></tfoot>
+            </table>
+        </div>
+    </section>
+</main>
+<th:block th:replace="~{fragments/layout :: pie}"></th:block>
+</body>
+</html>
