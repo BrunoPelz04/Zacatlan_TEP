@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="es">
-<head th:replace="~{fragments/layout :: head('Iniciar sesión')}"></head>
+<head th:fragment="head(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titulo}">Título</title>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap.min.css}">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/zacatlan.css}">
+</head>
 <body>
 <div class="row g-0 min-vh-100">
 
@@ -26,10 +32,14 @@
                 <input type="password" class="form-control" id="password" name="password"
                        autocomplete="current-password" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Entrar</button>
+            <button
+                    th:href="@{/login/valida-user/{email}{password} (id=${list.id})}"
+                    type="submit" class="btn btn-primary w-100">Entrar</button>
         </form>
     </main>
 
 </div>
+
+<script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
 </body>
 </html>
