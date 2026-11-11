@@ -8,7 +8,7 @@
 		<version>4.1.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>mx.unam.fes</groupId>
+	<groupId>mx.fes.unam</groupId>
 	<artifactId>jpa_zacatlan</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name/>
