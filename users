@@ -1,0 +1,16 @@
+1. Administradores
+Usuario (correo)	Rol	Bloque
+carlos.hernandez@zacatlan.mx	Super admin	Todos
+laura.mendoza@zacatlan.mx	Admin general	Todos
+jorge.vargas@zacatlan.mx	Admin de sección	Centro
+patricia.dominguez@zacatlan.mx	Admin de sección	Norte
+
+2. Vendedores
+Usuario (correo)	Rol	Bloque
+miguel.cruz@zacatlan.mx	Vendedor	Centro
+rosa.olvera@zacatlan.mx	Vendedor	Centro
+fernando.gomez@zacatlan.mx	Vendedor	Norte
+lucia.salazar@zacatlan.mx	Vendedor	Norte
+ricardo.ibarra@zacatlan.mx	Vendedor	Sur
+daniela.castillo@zacatlan.mx	Vendedor	Sur
+hector.rojas@zacatlan.mx	Vendedor	Sur (inactivo)
