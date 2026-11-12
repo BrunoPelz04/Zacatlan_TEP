@@ -1,154 +1,362 @@
 -- =====================================================
--- Script de creación de base de datos (MySQL 8+)
+-- Datos ficticios para zacatlan_ventas
+-- Ejecutar DESPUÉS de schema.sql
+-- Contraseña de TODOS los usuarios de prueba: Prueba123
 -- =====================================================
-
-CREATE DATABASE IF NOT EXISTS zacatlan_ventas
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_unicode_ci;
 
 USE zacatlan_ventas;
 
--- -----------------------------------------------------
--- Tabla: tipo_user
--- -----------------------------------------------------
-CREATE TABLE tipo_user (
-  tipo_user_id INT NOT NULL AUTO_INCREMENT,
-  nombre       VARCHAR(30) NOT NULL,
-  PRIMARY KEY (tipo_user_id),
-  UNIQUE KEY uq_tipo_user_nombre (nombre)
-) ENGINE=InnoDB;
+-- Bloques
+INSERT INTO bloque (nombre, fecha_creacion, descripcion) VALUES
+  ('Bloque Centro', '2026-01-10 09:00:00', 'Zona centro y mercado principal'),
+  ('Bloque Norte', '2026-01-10 09:05:00', 'Colonias del norte y plaza comercial'),
+  ('Bloque Sur', '2026-01-12 10:00:00', 'Zona sur y tianguis dominical');
 
--- -----------------------------------------------------
--- Tabla: bloque
--- -----------------------------------------------------
-CREATE TABLE bloque (
-  bloque_id      INT NOT NULL AUTO_INCREMENT,
-  nombre         VARCHAR(50) NOT NULL,
-  fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  descripcion    VARCHAR(150) NULL,
-  PRIMARY KEY (bloque_id),
-  UNIQUE KEY uq_bloque_nombre (nombre)
-) ENGINE=InnoDB;
+-- Usuarios (1=Vendedor, 2=Admin, 3=Super admin)
+INSERT INTO usuario (bloque_id, tipo_user_id, nombres, apelli_ma, apelli_pa, activo, fecha_creacion, fecha_fin, telefono, correo, password_hash) VALUES
+  (NULL, 3, 'Carlos', 'Ramírez', 'Hernández', 1, '2026-01-05 08:00:00', NULL, '7971000001', 'carlos.hernandez@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (NULL, 2, 'Laura', 'Flores', 'Mendoza', 1, '2026-01-05 08:10:00', NULL, '7971000002', 'laura.mendoza@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (1, 2, 'Jorge', 'Soto', 'Vargas', 1, '2026-01-10 09:30:00', NULL, '7971000003', 'jorge.vargas@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (2, 2, 'Patricia', 'Lara', 'Domínguez', 1, '2026-01-10 09:35:00', NULL, '7971000004', 'patricia.dominguez@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (1, 1, 'Miguel Ángel', 'Torres', 'Cruz', 1, '2026-01-15 10:00:00', NULL, '7971000005', 'miguel.cruz@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (1, 1, 'Rosa', 'Núñez', 'Olvera', 1, '2026-01-15 10:05:00', NULL, '7971000006', 'rosa.olvera@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (2, 1, 'Fernando', 'Reyes', 'Gómez', 1, '2026-01-20 11:00:00', NULL, '7971000007', 'fernando.gomez@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (2, 1, 'Lucía', 'Pérez', 'Salazar', 1, '2026-01-20 11:05:00', NULL, '7971000008', 'lucia.salazar@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (3, 1, 'Ricardo', 'Mora', 'Ibarra', 1, '2026-02-01 09:00:00', NULL, '7971000009', 'ricardo.ibarra@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (3, 1, 'Daniela', 'Vega', 'Castillo', 1, '2026-02-01 09:10:00', NULL, '7971000010', 'daniela.castillo@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
+  (3, 1, 'Héctor', 'Aguilar', 'Rojas', 0, '2026-02-01 09:15:00', '2026-08-31 18:00:00', '7971000011', 'hector.rojas@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m');
 
--- -----------------------------------------------------
--- Tabla: usuario
--- bloque_id es NULL para admins generales y super admins
--- -----------------------------------------------------
-CREATE TABLE usuario (
-  usuario_id     INT NOT NULL AUTO_INCREMENT,
-  bloque_id      INT NULL,
-  tipo_user_id   INT NOT NULL,
-  nombres        VARCHAR(50) NOT NULL,
-  apelli_ma      VARCHAR(50) NULL,
-  apelli_pa      VARCHAR(50) NOT NULL,
-  activo         BOOLEAN NOT NULL DEFAULT TRUE,
-  fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_fin      DATETIME NULL,
-  telefono       VARCHAR(10) NULL,
-  correo         VARCHAR(50) NOT NULL,
-  password_hash  VARCHAR(255) NOT NULL,
-  PRIMARY KEY (usuario_id),
-  UNIQUE KEY uq_usuario_correo (correo),
-  KEY idx_usuario_bloque (bloque_id),
-  KEY idx_usuario_tipo (tipo_user_id),
-  CONSTRAINT fk_usuario_bloque
-    FOREIGN KEY (bloque_id) REFERENCES bloque (bloque_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT fk_usuario_tipo
-    FOREIGN KEY (tipo_user_id) REFERENCES tipo_user (tipo_user_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB;
+-- Productos base (plantilla sin dueño; se copian por vendedor al final del script)
+ALTER TABLE producto MODIFY usuario_id INT NULL;
+INSERT INTO producto (nombre, precio_estimado, cantidad, unidad_medida) VALUES
+  ('Jitomate', 28.00, 1.000, 'kg'),
+  ('Cebolla blanca', 22.00, 1.000, 'kg'),
+  ('Papa', 25.00, 1.000, 'kg'),
+  ('Limón', 35.00, 1.000, 'kg'),
+  ('Manzana', 45.00, 1.000, 'kg'),
+  ('Plátano', 20.00, 1.000, 'kg'),
+  ('Aguacate', 70.00, 1.000, 'kg'),
+  ('Cilantro', 8.00, 1.000, 'pza'),
+  ('Lechuga', 18.00, 1.000, 'pza'),
+  ('Elote', 10.00, 1.000, 'pza'),
+  ('Huevo (tapete 30 pzas)', 95.00, 30.000, 'pza'),
+  ('Tortillas', 24.00, 1.000, 'kg');
 
--- -----------------------------------------------------
--- Tabla: producto
--- cantidad = presentación base (ej. 1 kg, 1 pza)
--- precio_estimado = precio sugerido, el vendedor puede cambiarlo en la venta
--- -----------------------------------------------------
-CREATE TABLE producto (
-  producto_id     INT NOT NULL AUTO_INCREMENT,
-  nombre          VARCHAR(50) NOT NULL,
-  precio_estimado DECIMAL(10,2) NOT NULL,
-  cantidad        DECIMAL(10,3) NOT NULL DEFAULT 1,
-  unidad_medida   VARCHAR(20) NOT NULL,
-  PRIMARY KEY (producto_id),
-  CONSTRAINT chk_producto_precio CHECK (precio_estimado >= 0),
-  CONSTRAINT chk_producto_cantidad CHECK (cantidad > 0)
-) ENGINE=InnoDB;
+-- Jornadas (fecha_fin NULL = jornada abierta)
+INSERT INTO jornada (usuario_id, fecha_inicio, fecha_fin) VALUES
+  (5, '2026-11-01 07:35:00', '2026-11-01 18:18:00'),
+  (6, '2026-11-01 07:33:00', '2026-11-01 18:28:00'),
+  (7, '2026-11-01 07:35:00', '2026-11-01 18:37:00'),
+  (8, '2026-11-01 07:26:00', '2026-11-01 18:42:00'),
+  (9, '2026-11-01 07:42:00', '2026-11-01 18:26:00'),
+  (10, '2026-11-01 07:21:00', '2026-11-01 18:36:00'),
+  (5, '2026-11-02 07:36:00', '2026-11-02 18:25:00'),
+  (6, '2026-11-02 07:37:00', '2026-11-02 18:25:00'),
+  (7, '2026-11-02 07:23:00', '2026-11-02 18:38:00'),
+  (8, '2026-11-02 07:17:00', '2026-11-02 18:27:00'),
+  (9, '2026-11-02 07:24:00', '2026-11-02 18:28:00'),
+  (10, '2026-11-02 07:35:00', '2026-11-02 18:31:00'),
+  (5, '2026-11-03 07:38:00', '2026-11-03 18:30:00'),
+  (6, '2026-11-03 07:45:00', '2026-11-03 18:21:00'),
+  (7, '2026-11-03 07:22:00', '2026-11-03 18:15:00'),
+  (8, '2026-11-03 07:22:00', '2026-11-03 18:23:00'),
+  (9, '2026-11-03 07:29:00', '2026-11-03 18:42:00'),
+  (10, '2026-11-03 07:42:00', '2026-11-03 18:44:00'),
+  (5, '2026-11-04 07:28:00', '2026-11-04 18:30:00'),
+  (6, '2026-11-04 07:37:00', '2026-11-04 18:30:00'),
+  (7, '2026-11-04 07:16:00', '2026-11-04 18:33:00'),
+  (8, '2026-11-04 07:18:00', '2026-11-04 18:45:00'),
+  (9, '2026-11-04 07:19:00', '2026-11-04 18:36:00'),
+  (10, '2026-11-04 07:20:00', '2026-11-04 18:29:00'),
+  (5, '2026-11-05 07:21:00', '2026-11-05 18:37:00'),
+  (6, '2026-11-05 07:15:00', '2026-11-05 18:25:00'),
+  (7, '2026-11-05 07:17:00', '2026-11-05 18:45:00'),
+  (8, '2026-11-05 07:18:00', '2026-11-05 18:26:00'),
+  (9, '2026-11-05 07:20:00', '2026-11-05 18:40:00'),
+  (10, '2026-11-05 07:23:00', '2026-11-05 18:42:00'),
+  (5, '2026-11-06 07:23:00', '2026-11-06 18:20:00'),
+  (6, '2026-11-06 07:28:00', '2026-11-06 18:15:00'),
+  (7, '2026-11-06 07:24:00', '2026-11-06 18:32:00'),
+  (8, '2026-11-06 07:27:00', '2026-11-06 18:32:00'),
+  (9, '2026-11-06 07:29:00', '2026-11-06 18:29:00'),
+  (10, '2026-11-06 07:15:00', '2026-11-06 18:16:00'),
+  (5, '2026-11-07 07:37:00', '2026-11-07 18:27:00'),
+  (6, '2026-11-07 07:22:00', '2026-11-07 18:44:00'),
+  (7, '2026-11-07 07:43:00', '2026-11-07 18:29:00'),
+  (8, '2026-11-07 07:29:00', '2026-11-07 18:17:00'),
+  (9, '2026-11-07 07:28:00', '2026-11-07 18:16:00'),
+  (10, '2026-11-07 07:30:00', '2026-11-07 18:15:00'),
+  (5, '2026-11-08 07:30:00', '2026-11-08 18:15:00'),
+  (6, '2026-11-08 07:36:00', '2026-11-08 18:15:00'),
+  (7, '2026-11-08 07:29:00', '2026-11-08 18:25:00'),
+  (8, '2026-11-08 07:45:00', '2026-11-08 18:35:00'),
+  (9, '2026-11-08 07:18:00', '2026-11-08 18:33:00'),
+  (10, '2026-11-08 07:41:00', '2026-11-08 18:20:00'),
+  (5, '2026-11-09 07:36:00', '2026-11-09 18:34:00'),
+  (6, '2026-11-09 07:25:00', '2026-11-09 18:15:00'),
+  (7, '2026-11-09 07:30:00', '2026-11-09 18:29:00'),
+  (8, '2026-11-09 07:34:00', '2026-11-09 18:36:00'),
+  (9, '2026-11-09 07:15:00', '2026-11-09 18:31:00'),
+  (10, '2026-11-09 07:37:00', '2026-11-09 18:30:00'),
+  (5, '2026-11-10 07:38:00', '2026-11-10 18:32:00'),
+  (6, '2026-11-10 07:21:00', '2026-11-10 18:38:00'),
+  (7, '2026-11-10 07:37:00', '2026-11-10 18:32:00'),
+  (8, '2026-11-10 07:42:00', '2026-11-10 18:15:00'),
+  (9, '2026-11-10 07:33:00', NULL),
+  (10, '2026-11-10 07:42:00', NULL),
+  (11, '2026-08-10 07:30:00', '2026-08-10 18:30:00'),
+  (11, '2026-08-14 07:30:00', '2026-08-14 18:30:00'),
+  (11, '2026-08-19 07:30:00', '2026-08-19 18:30:00'),
+  (11, '2026-08-24 07:30:00', '2026-08-24 18:30:00'),
+  (11, '2026-08-28 07:30:00', '2026-08-28 18:30:00');
 
--- -----------------------------------------------------
--- Tabla: jornada (turno de trabajo de un vendedor)
--- fecha_fin NULL = jornada abierta
--- El vendedor de cada venta se obtiene a través de la jornada
--- -----------------------------------------------------
-CREATE TABLE jornada (
-  jornada_id   INT NOT NULL AUTO_INCREMENT,
-  usuario_id   INT NOT NULL,
-  fecha_inicio DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  fecha_fin    DATETIME NULL,
-  PRIMARY KEY (jornada_id),
-  KEY idx_jornada_usuario_inicio (usuario_id, fecha_inicio),
-  CONSTRAINT fk_jornada_usuario
-    FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT chk_jornada_fechas CHECK (fecha_fin IS NULL OR fecha_fin >= fecha_inicio)
-) ENGINE=InnoDB;
+-- Ventas (precio_final = total cobrado)
+INSERT INTO ventas (producto_id, jornada_id, fecha, precio_final, cantidad) VALUES
+  (1, 61, '2026-08-10 17:30:00', 56.00, 2.000),
+  (5, 62, '2026-08-14 12:45:00', 21.38, 0.500),
+  (5, 63, '2026-08-19 15:04:00', 148.50, 3.000),
+  (11, 64, '2026-08-24 17:42:00', 3.17, 1.000),
+  (4, 65, '2026-08-28 16:14:00', 63.00, 2.000),
+  (4, 5, '2026-11-01 08:42:00', 94.50, 3.000),
+  (10, 4, '2026-11-01 08:46:00', 33.00, 3.000),
+  (12, 6, '2026-11-01 09:38:00', 75.60, 3.000),
+  (4, 5, '2026-11-01 09:54:00', 175.00, 5.000),
+  (7, 3, '2026-11-01 10:13:00', 105.00, 1.500),
+  (1, 3, '2026-11-01 10:44:00', 154.00, 5.000),
+  (12, 1, '2026-11-01 11:08:00', 34.20, 1.500),
+  (11, 6, '2026-11-01 11:10:00', 3.17, 1.000),
+  (1, 2, '2026-11-01 11:32:00', 13.30, 0.500),
+  (10, 2, '2026-11-01 11:45:00', 10.00, 1.000),
+  (8, 5, '2026-11-01 13:22:00', 22.80, 3.000),
+  (8, 4, '2026-11-01 14:05:00', 43.20, 6.000),
+  (6, 3, '2026-11-01 14:06:00', 9.00, 0.500),
+  (4, 5, '2026-11-01 14:17:00', 157.50, 5.000),
+  (12, 1, '2026-11-01 16:05:00', 12.60, 0.500),
+  (8, 6, '2026-11-01 16:14:00', 32.00, 4.000),
+  (7, 3, '2026-11-01 17:17:00', 70.00, 1.000),
+  (9, 4, '2026-11-01 17:56:00', 59.40, 3.000),
+  (1, 12, '2026-11-02 09:05:00', 28.00, 1.000),
+  (1, 10, '2026-11-02 09:43:00', 88.20, 3.000),
+  (3, 9, '2026-11-02 09:48:00', 62.50, 2.500),
+  (4, 12, '2026-11-02 10:34:00', 35.00, 1.000),
+  (1, 9, '2026-11-02 10:40:00', 126.00, 5.000),
+  (1, 12, '2026-11-02 12:15:00', 14.00, 0.500),
+  (8, 11, '2026-11-02 12:32:00', 8.40, 1.000),
+  (10, 10, '2026-11-02 12:35:00', 40.00, 4.000),
+  (3, 11, '2026-11-02 12:53:00', 56.25, 2.500),
+  (9, 10, '2026-11-02 13:07:00', 59.40, 3.000),
+  (7, 9, '2026-11-02 13:14:00', 175.00, 2.500),
+  (4, 7, '2026-11-02 13:25:00', 157.50, 5.000),
+  (9, 12, '2026-11-02 13:31:00', 18.00, 1.000),
+  (3, 9, '2026-11-02 14:38:00', 131.25, 5.000),
+  (11, 8, '2026-11-02 15:09:00', 6.34, 2.000),
+  (5, 8, '2026-11-02 16:34:00', 42.75, 1.000),
+  (5, 7, '2026-11-02 17:56:00', 21.38, 0.500),
+  (8, 18, '2026-11-03 08:41:00', 43.20, 6.000),
+  (1, 17, '2026-11-03 09:03:00', 88.20, 3.000),
+  (8, 16, '2026-11-03 09:06:00', 30.40, 4.000),
+  (7, 17, '2026-11-03 09:15:00', 210.00, 3.000),
+  (2, 14, '2026-11-03 09:21:00', 20.90, 1.000),
+  (1, 15, '2026-11-03 09:32:00', 140.00, 5.000),
+  (8, 16, '2026-11-03 10:46:00', 16.00, 2.000),
+  (12, 15, '2026-11-03 11:04:00', 64.80, 3.000),
+  (9, 18, '2026-11-03 11:10:00', 16.20, 1.000),
+  (1, 14, '2026-11-03 11:37:00', 70.00, 2.500),
+  (10, 16, '2026-11-03 11:50:00', 60.00, 6.000),
+  (12, 14, '2026-11-03 12:25:00', 68.40, 3.000),
+  (11, 16, '2026-11-03 14:26:00', 6.34, 2.000),
+  (4, 17, '2026-11-03 15:08:00', 35.00, 1.000),
+  (7, 17, '2026-11-03 15:15:00', 70.00, 1.000),
+  (9, 13, '2026-11-03 15:35:00', 34.20, 2.000),
+  (11, 14, '2026-11-03 16:28:00', 6.34, 2.000),
+  (3, 13, '2026-11-03 17:27:00', 37.50, 1.500),
+  (4, 19, '2026-11-04 08:10:00', 175.00, 5.000),
+  (9, 21, '2026-11-04 08:32:00', 102.60, 6.000),
+  (4, 20, '2026-11-04 08:37:00', 49.88, 1.500),
+  (4, 22, '2026-11-04 08:39:00', 87.50, 2.500),
+  (5, 23, '2026-11-04 09:00:00', 90.00, 2.000),
+  (8, 23, '2026-11-04 09:04:00', 48.00, 6.000),
+  (2, 21, '2026-11-04 09:38:00', 104.50, 5.000),
+  (3, 24, '2026-11-04 09:47:00', 33.75, 1.500),
+  (11, 24, '2026-11-04 09:56:00', 6.66, 2.000),
+  (2, 21, '2026-11-04 11:25:00', 72.60, 3.000),
+  (9, 22, '2026-11-04 11:42:00', 54.00, 3.000),
+  (9, 23, '2026-11-04 12:08:00', 36.00, 2.000),
+  (12, 22, '2026-11-04 12:25:00', 34.20, 1.500),
+  (9, 24, '2026-11-04 12:38:00', 36.00, 2.000),
+  (7, 19, '2026-11-04 12:59:00', 35.00, 0.500),
+  (12, 20, '2026-11-04 13:03:00', 54.00, 2.500),
+  (6, 23, '2026-11-04 13:18:00', 9.50, 0.500),
+  (12, 24, '2026-11-04 16:00:00', 36.00, 1.500),
+  (8, 19, '2026-11-04 16:42:00', 24.00, 3.000),
+  (2, 22, '2026-11-04 17:36:00', 46.20, 2.000),
+  (8, 25, '2026-11-05 08:05:00', 26.40, 3.000),
+  (12, 26, '2026-11-05 08:07:00', 48.00, 2.000),
+  (2, 29, '2026-11-05 08:54:00', 48.40, 2.000),
+  (5, 27, '2026-11-05 08:57:00', 74.25, 1.500),
+  (11, 30, '2026-11-05 09:56:00', 5.70, 2.000),
+  (9, 27, '2026-11-05 10:02:00', 36.00, 2.000),
+  (4, 28, '2026-11-05 10:56:00', 166.25, 5.000),
+  (7, 28, '2026-11-05 10:59:00', 183.75, 2.500),
+  (5, 29, '2026-11-05 11:14:00', 247.50, 5.000),
+  (7, 28, '2026-11-05 11:17:00', 367.50, 5.000),
+  (6, 27, '2026-11-05 11:42:00', 21.00, 1.000),
+  (11, 25, '2026-11-05 12:02:00', 6.96, 2.000),
+  (4, 25, '2026-11-05 12:32:00', 110.25, 3.000),
+  (3, 27, '2026-11-05 13:37:00', 56.25, 2.500),
+  (7, 28, '2026-11-05 13:50:00', 33.25, 0.500),
+  (1, 29, '2026-11-05 14:21:00', 79.80, 3.000),
+  (8, 29, '2026-11-05 15:22:00', 15.20, 2.000),
+  (11, 26, '2026-11-05 15:35:00', 6.02, 2.000),
+  (5, 30, '2026-11-05 16:25:00', 70.88, 1.500),
+  (10, 31, '2026-11-06 08:45:00', 20.00, 2.000),
+  (8, 36, '2026-11-06 09:29:00', 52.80, 6.000),
+  (4, 35, '2026-11-06 10:42:00', 87.50, 2.500),
+  (5, 35, '2026-11-06 11:09:00', 49.50, 1.000),
+  (2, 35, '2026-11-06 11:43:00', 121.00, 5.000),
+  (7, 36, '2026-11-06 11:45:00', 210.00, 3.000),
+  (6, 31, '2026-11-06 13:27:00', 66.00, 3.000),
+  (10, 34, '2026-11-06 13:29:00', 63.00, 6.000),
+  (11, 32, '2026-11-06 13:42:00', 6.34, 2.000),
+  (9, 32, '2026-11-06 14:04:00', 36.00, 2.000),
+  (4, 33, '2026-11-06 14:43:00', 73.50, 2.000),
+  (11, 32, '2026-11-06 14:44:00', 6.34, 2.000),
+  (5, 34, '2026-11-06 14:50:00', 64.12, 1.500),
+  (10, 31, '2026-11-06 14:57:00', 54.00, 6.000),
+  (2, 32, '2026-11-06 16:19:00', 66.00, 3.000),
+  (12, 33, '2026-11-06 17:19:00', 24.00, 1.000),
+  (2, 35, '2026-11-06 17:21:00', 33.00, 1.500),
+  (5, 31, '2026-11-06 17:27:00', 20.25, 0.500),
+  (12, 37, '2026-11-07 08:35:00', 60.00, 2.500),
+  (7, 37, '2026-11-07 08:57:00', 66.50, 1.000),
+  (9, 40, '2026-11-07 10:14:00', 17.10, 1.000),
+  (7, 40, '2026-11-07 11:04:00', 199.50, 3.000),
+  (2, 37, '2026-11-07 11:11:00', 110.00, 5.000),
+  (9, 39, '2026-11-07 11:17:00', 75.60, 4.000),
+  (4, 42, '2026-11-07 12:27:00', 66.50, 2.000),
+  (5, 39, '2026-11-07 12:49:00', 213.75, 5.000),
+  (5, 40, '2026-11-07 13:20:00', 45.00, 1.000),
+  (9, 38, '2026-11-07 13:48:00', 108.00, 6.000),
+  (5, 42, '2026-11-07 14:34:00', 225.00, 5.000),
+  (3, 39, '2026-11-07 15:28:00', 82.50, 3.000),
+  (8, 38, '2026-11-07 15:42:00', 17.60, 2.000),
+  (12, 39, '2026-11-07 16:28:00', 60.00, 2.500),
+  (7, 40, '2026-11-07 16:29:00', 140.00, 2.000),
+  (1, 41, '2026-11-07 17:24:00', 154.00, 5.000),
+  (7, 41, '2026-11-07 17:44:00', 154.00, 2.000),
+  (12, 42, '2026-11-07 17:57:00', 72.00, 3.000),
+  (1, 46, '2026-11-08 08:39:00', 26.60, 1.000),
+  (6, 45, '2026-11-08 09:49:00', 21.00, 1.000),
+  (10, 47, '2026-11-08 09:49:00', 63.00, 6.000),
+  (3, 43, '2026-11-08 10:39:00', 125.00, 5.000),
+  (11, 48, '2026-11-08 11:04:00', 6.34, 2.000),
+  (2, 48, '2026-11-08 12:36:00', 49.50, 2.500),
+  (10, 48, '2026-11-08 12:54:00', 18.00, 2.000),
+  (8, 47, '2026-11-08 13:10:00', 26.40, 3.000),
+  (1, 44, '2026-11-08 13:13:00', 42.00, 1.500),
+  (7, 45, '2026-11-08 14:16:00', 115.50, 1.500),
+  (6, 43, '2026-11-08 14:46:00', 63.00, 3.000),
+  (11, 44, '2026-11-08 15:11:00', 6.02, 2.000),
+  (3, 46, '2026-11-08 15:42:00', 23.75, 1.000),
+  (2, 45, '2026-11-08 16:03:00', 39.60, 2.000),
+  (9, 43, '2026-11-08 17:36:00', 18.00, 1.000),
+  (8, 50, '2026-11-09 10:46:00', 16.00, 2.000),
+  (1, 54, '2026-11-09 11:25:00', 14.00, 0.500),
+  (8, 52, '2026-11-09 12:21:00', 16.00, 2.000),
+  (5, 52, '2026-11-09 12:35:00', 118.12, 2.500),
+  (4, 51, '2026-11-09 12:56:00', 157.50, 5.000),
+  (6, 52, '2026-11-09 13:11:00', 10.00, 0.500),
+  (8, 54, '2026-11-09 13:27:00', 48.00, 6.000),
+  (8, 50, '2026-11-09 13:40:00', 8.00, 1.000),
+  (12, 51, '2026-11-09 13:54:00', 60.00, 2.500),
+  (2, 53, '2026-11-09 14:31:00', 23.10, 1.000),
+  (8, 51, '2026-11-09 15:36:00', 17.60, 2.000),
+  (9, 53, '2026-11-09 15:41:00', 37.80, 2.000),
+  (10, 49, '2026-11-09 16:27:00', 10.00, 1.000),
+  (11, 49, '2026-11-09 16:41:00', 5.70, 2.000),
+  (9, 50, '2026-11-09 16:49:00', 54.00, 3.000),
+  (12, 54, '2026-11-09 17:23:00', 24.00, 1.000),
+  (4, 60, '2026-11-10 09:10:00', 35.00, 1.000),
+  (4, 60, '2026-11-10 09:10:00', 55.12, 1.500),
+  (2, 58, '2026-11-10 09:36:00', 44.00, 2.000),
+  (2, 55, '2026-11-10 10:12:00', 66.00, 3.000),
+  (11, 58, '2026-11-10 10:51:00', 3.01, 1.000),
+  (5, 56, '2026-11-10 11:18:00', 24.75, 0.500),
+  (5, 55, '2026-11-10 11:20:00', 40.50, 1.000),
+  (10, 60, '2026-11-10 11:40:00', 11.00, 1.000),
+  (4, 56, '2026-11-10 12:00:00', 49.88, 1.500),
+  (6, 55, '2026-11-10 12:19:00', 60.00, 3.000),
+  (12, 57, '2026-11-10 15:06:00', 25.20, 1.000),
+  (3, 58, '2026-11-10 15:07:00', 12.50, 0.500),
+  (9, 59, '2026-11-10 15:19:00', 72.00, 4.000),
+  (5, 58, '2026-11-10 15:21:00', 90.00, 2.000),
+  (5, 57, '2026-11-10 16:18:00', 20.25, 0.500),
+  (5, 56, '2026-11-10 16:38:00', 135.00, 3.000),
+  (2, 59, '2026-11-10 16:48:00', 19.80, 1.000),
+  (7, 60, '2026-11-10 17:03:00', 105.00, 1.500),
+  (7, 59, '2026-11-10 17:14:00', 175.00, 2.500);
 
--- -----------------------------------------------------
--- Tabla: ventas
--- precio_final = TOTAL cobrado en la venta
--- cantidad = cantidad vendida (admite decimales, ej. 1.5 kg)
--- -----------------------------------------------------
-CREATE TABLE ventas (
-  venta_id     INT NOT NULL AUTO_INCREMENT,
-  producto_id  INT NOT NULL,
-  jornada_id   INT NOT NULL,
-  fecha        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  precio_final DECIMAL(10,2) NOT NULL,
-  cantidad     DECIMAL(10,3) NOT NULL,
-  PRIMARY KEY (venta_id),
-  KEY idx_ventas_fecha (fecha),
-  KEY idx_ventas_producto (producto_id),
-  KEY idx_ventas_jornada (jornada_id),
-  CONSTRAINT fk_ventas_producto
-    FOREIGN KEY (producto_id) REFERENCES producto (producto_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT fk_ventas_jornada
-    FOREIGN KEY (jornada_id) REFERENCES jornada (jornada_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT,
-  CONSTRAINT chk_ventas_precio CHECK (precio_final >= 0),
-  CONSTRAINT chk_ventas_cantidad CHECK (cantidad > 0)
-) ENGINE=InnoDB;
+-- Historial de acciones de administradores
+INSERT INTO historial (usuario_id, fecha, accion, descripcion) VALUES
+  (1, '2026-01-10 09:00:00', 'crear', 'Se creó el bloque Centro'),
+  (1, '2026-01-10 09:05:00', 'crear', 'Se creó el bloque Norte'),
+  (2, '2026-01-15 10:00:00', 'crear', 'Alta del vendedor Miguel Ángel Torres Cruz'),
+  (3, '2026-01-15 10:06:00', 'crear', 'Alta del vendedor Rosa Núñez Olvera'),
+  (4, '2026-01-20 11:06:00', 'crear', 'Alta del vendedor Lucía Pérez Salazar'),
+  (2, '2026-03-02 12:30:00', 'editar', 'Se actualizó el precio estimado del jitomate'),
+  (1, '2026-08-31 18:00:00', 'editar', 'Baja del vendedor Héctor Aguilar Rojas'),
+  (2, '2026-09-14 09:45:00', 'editar', 'Se actualizó el teléfono de Daniela Vega Castillo'),
+  (4, '2026-10-05 16:20:00', 'crear', 'Se agregó el producto Elote'),
+  (1, '2026-11-03 10:15:00', 'eliminar', 'Se eliminó un registro de producto duplicado');
 
--- -----------------------------------------------------
--- Tabla: historial (acciones de los administradores)
--- -----------------------------------------------------
-CREATE TABLE historial (
-  historial_id INT NOT NULL AUTO_INCREMENT,
-  usuario_id   INT NOT NULL,
-  descripcion  VARCHAR(255) NULL,
-  fecha        DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  accion       VARCHAR(20) NOT NULL,
-  PRIMARY KEY (historial_id),
-  KEY idx_historial_usuario_fecha (usuario_id, fecha),
-  CONSTRAINT fk_historial_usuario
-    FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id)
-    ON UPDATE CASCADE ON DELETE RESTRICT
-) ENGINE=InnoDB;
+-- =====================================================
+-- Productos por vendedor
+-- Cada producto pertenece a un solo vendedor. Los 12 productos base
+-- (usuario_id NULL) se copian para cada vendedor, cada venta se reasigna
+-- a la copia del vendedor de su jornada y los originales se borran.
+-- Se incluyen vendedores inactivos (Héctor tiene ventas históricas).
+-- =====================================================
 
--- -----------------------------------------------------
--- Datos iniciales
--- -----------------------------------------------------
-INSERT INTO tipo_user (nombre) VALUES
-  ('Vendedor'),
-  ('Admin'),
-  ('Super admin');
+-- 1) Una copia de cada producto base por vendedor
+INSERT INTO producto (usuario_id, nombre, precio_estimado, cantidad, unidad_medida)
+SELECT u.usuario_id, p.nombre, p.precio_estimado, p.cantidad, p.unidad_medida
+FROM usuario u
+CROSS JOIN producto p
+WHERE u.tipo_user_id = 1
+  AND p.usuario_id IS NULL;
 
--- -----------------------------------------------------
--- Ejemplo de reporte: ventas de un vendedor en un día
--- -----------------------------------------------------
--- SELECT SUM(v.precio_final) AS total_dia
+-- 2) Reasignar cada venta a la copia del vendedor dueño de su jornada
+UPDATE ventas v
+JOIN jornada  j ON j.jornada_id  = v.jornada_id
+JOIN producto o ON o.producto_id = v.producto_id AND o.usuario_id IS NULL
+JOIN producto c ON c.usuario_id  = j.usuario_id  AND c.nombre = o.nombre
+SET v.producto_id = c.producto_id;
+
+-- 3) Borrar los productos base y volver a exigir dueño.
+--    Si alguna venta siguiera apuntando a un original, el DELETE falla por la FK.
+DELETE FROM producto WHERE usuario_id IS NULL;
+ALTER TABLE producto MODIFY usuario_id INT NOT NULL;
+
+-- =====================================================
+-- Consultas de ejemplo para verificar
+-- =====================================================
+-- Total vendido por vendedor en un día:
+-- SELECT CONCAT(u.nombres,' ',u.apelli_pa) AS vendedor, SUM(v.precio_final) AS total_dia
 -- FROM ventas v
 -- JOIN jornada j ON j.jornada_id = v.jornada_id
--- WHERE j.usuario_id = 5
---   AND v.fecha >= '2026-11-10'
---   AND v.fecha <  '2026-11-11';
+-- JOIN usuario u ON u.usuario_id = j.usuario_id
+-- WHERE v.fecha >= '2026-11-10' AND v.fecha < '2026-11-11'
+-- GROUP BY u.usuario_id;
+--
+-- Total de una jornada:
+-- SELECT j.jornada_id, j.fecha_inicio, j.fecha_fin, SUM(v.precio_final) AS total
+-- FROM jornada j JOIN ventas v ON v.jornada_id = j.jornada_id
+-- GROUP BY j.jornada_id;
+--
+-- Total por bloque:
+-- SELECT b.nombre, SUM(v.precio_final) AS total
+-- FROM ventas v
+-- JOIN jornada j ON j.jornada_id = v.jornada_id
+-- JOIN usuario u ON u.usuario_id = j.usuario_id
+-- JOIN bloque b ON b.bloque_id = u.bloque_id
+-- GROUP BY b.bloque_id;
