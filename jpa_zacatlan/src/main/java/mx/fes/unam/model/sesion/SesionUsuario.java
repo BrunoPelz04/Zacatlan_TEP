@@ -8,9 +8,9 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 public class SesionUsuario implements Serializable {
+    private Integer usuarioId;
     private String nombre;
-    private String rol;              // "ADMIN" o "VENDEDOR"
+    private String rol;
     private boolean adminDeBloque;
-    private String bloque;           // nombre del bloque, o null
-    private Integer usuarioId;       // id del usuario que inició sesión
+    private String bloque;
 }

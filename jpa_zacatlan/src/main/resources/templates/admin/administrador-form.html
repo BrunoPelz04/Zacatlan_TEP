@@ -9,8 +9,20 @@
     <form class="card card-body zac-form" method="post" th:action="@{/admin/administradores}">
         <input type="hidden" name="id" th:value="${administrador.id}">
         <div class="mb-3">
-            <label class="form-label" for="nombre">Nombre</label>
-            <input class="form-control" id="nombre" name="nombre" type="text" maxlength="100" required th:value="${administrador.nombre}">
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label" for="nombres">Nombres</label>
+                    <input class="form-control" id="nombres" name="nombres" type="text" maxlength="50" required th:value="${administrador.nombres}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label" for="apelliPa">Apellido paterno</label>
+                    <input class="form-control" id="apelliPa" name="apelliPa" type="text" maxlength="50" required th:value="${administrador.apelliPa}">
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label class="form-label" for="apelliMa">Apellido materno</label>
+                    <input class="form-control" id="apelliMa" name="apelliMa" type="text" maxlength="50" th:value="${administrador.apelliMa}">
+                </div>
+            </div>
         </div>
         <div class="mb-3">
             <label class="form-label" for="email">Correo</label>

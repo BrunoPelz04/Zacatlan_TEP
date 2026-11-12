@@ -5,6 +5,8 @@ import lombok.*;
 import mx.fes.unam.model.entities.bloque.BloqueEntity;
 import mx.fes.unam.model.entities.tipouser.TipoUserEntity;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "usuario")
 @Data
@@ -25,6 +27,8 @@ public class UsuarioEntity {
     private String nombres;
     private String apelliPa;
     private String apelliMa;
+    private LocalDateTime fechaCreacion;
+    private LocalDateTime fechaFin;
     private String telefono;
     private Boolean activo;
     private String correo;
