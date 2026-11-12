@@ -2,16 +2,24 @@ package mx.fes.unam.controller;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
+import mx.fes.unam.model.dto.ReporteDTO;
 import mx.fes.unam.model.dto.VentaDTO;
 import mx.fes.unam.model.sesion.SesionUsuario;
+import mx.fes.unam.service.reporte.ReportePdfService;
 import mx.fes.unam.service.venta.VentaService;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,9 +28,11 @@ import java.util.List;
 @RequestMapping("/vendedor")
 public class VentaController {
     private final VentaService ventaService;
+    private final ReportePdfService reportePdfService;
 
-    public VentaController(VentaService ventaService) {
+    public VentaController(VentaService ventaService, ReportePdfService reportePdfService) {
         this.ventaService = ventaService;
+        this.reportePdfService = reportePdfService;
     }
 
     //Mis ventas: del día por defecto, o entre dos fechas
@@ -33,15 +43,9 @@ public class VentaController {
         SesionUsuario s = sesionVendedor(session);
         if (s == null) return "redirect:/";
 
-        //Fechas por omisión: hoy; si falta una se usa la otra; si vienen al revés se voltean
-        if (desde == null && hasta == null) desde = LocalDate.now();
-        if (desde == null) desde = hasta;
-        if (hasta == null) hasta = desde;
-        if (hasta.isBefore(desde)) {
-            LocalDate aux = desde;
-            desde = hasta;
-            hasta = aux;
-        }
+        LocalDate[] rango = normalizarRango(desde, hasta);
+        desde = rango[0];
+        hasta = rango[1];
 
         List<VentaDTO> ventas = ventaService.listarVentas(s.getUsuarioId(), desde, hasta);
         model.addAttribute("ventas", ventas);
@@ -51,6 +55,28 @@ public class VentaController {
         model.addAttribute("varios", !desde.equals(hasta));
         model.addAttribute("activo", "mias");
         return "vendedor/mis-ventas";
+    }
+
+    //Reporte PDF de mis ventas (mismo rango de fechas que la pantalla Mis ventas)
+    @GetMapping("/ventas/pdf")
+    public ResponseEntity<byte[]> reportePdf(@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate desde,
+                                             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate hasta,
+                                             HttpSession session) {
+        SesionUsuario s = sesionVendedor(session);
+        if (s == null) {
+            return ResponseEntity.status(HttpStatus.FOUND).location(URI.create("/")).build();
+        }
+
+        LocalDate[] rango = normalizarRango(desde, hasta);
+        ReporteDTO reporte = ventaService.reporteDelVendedor(s.getUsuarioId(), rango[0], rango[1]);
+        byte[] pdf = reportePdfService.generar(reporte);
+
+        String nombre = "reporte-ventas-" + rango[0]
+                + (rango[0].equals(rango[1]) ? "" : "_a_" + rango[1]) + ".pdf";
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_PDF)
+                .header(HttpHeaders.CONTENT_DISPOSITION, ContentDisposition.attachment().filename(nombre).build().toString())
+                .body(pdf);
     }
 
     //Nueva venta: estado del día, formulario y ventas de hoy
@@ -116,6 +142,19 @@ public class VentaController {
             ra.addFlashAttribute("error", e.getMessage());
         }
         return "redirect:/vendedor/ventas/nueva";
+    }
+
+    //Fechas por omisión: hoy; si falta una se usa la otra; si vienen al revés se voltean
+    private LocalDate[] normalizarRango(LocalDate desde, LocalDate hasta) {
+        if (desde == null && hasta == null) desde = LocalDate.now();
+        if (desde == null) desde = hasta;
+        if (hasta == null) hasta = desde;
+        if (hasta.isBefore(desde)) {
+            LocalDate aux = desde;
+            desde = hasta;
+            hasta = aux;
+        }
+        return new LocalDate[]{desde, hasta};
     }
 
     //Sesion de un vendedor; null si no hay sesion, es admin o es una sesion vieja sin id

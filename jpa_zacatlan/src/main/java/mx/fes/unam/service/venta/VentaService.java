@@ -2,9 +2,11 @@ package mx.fes.unam.service.venta;
 
 import mx.fes.unam.model.dto.JornadaDTO;
 import mx.fes.unam.model.dto.ProductoDTO;
+import mx.fes.unam.model.dto.ReporteDTO;
 import mx.fes.unam.model.dto.VentaDTO;
 import mx.fes.unam.model.entities.jornada.JornadaEntity;
 import mx.fes.unam.model.entities.producto.ProductoEntity;
+import mx.fes.unam.model.entities.usuario.UsuarioEntity;
 import mx.fes.unam.model.entities.venta.VentaEntity;
 import mx.fes.unam.repository.JornadaRepository;
 import mx.fes.unam.repository.ProductoRepository;
@@ -89,6 +91,23 @@ public class VentaService {
         return ventas.stream()
                 .map(v -> v.getTotal())
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    //Reporte de las ventas del vendedor entre dos fechas (para el PDF)
+    public ReporteDTO reporteDelVendedor(Integer usuarioId, LocalDate desde, LocalDate hasta) {
+        UsuarioEntity u = usuarioRepository.findById(usuarioId).orElseThrow();
+        List<VentaDTO> ventas = listarVentas(usuarioId, desde, hasta);
+
+        ReporteDTO reporte = new ReporteDTO();
+        reporte.setVendedorNombre(String.join(" ",
+                u.getNombres(), u.getApelliPa(), u.getApelliMa() == null ? "" : u.getApelliMa()).trim());
+        reporte.setBloqueNombre(u.getBloque() == null ? null : u.getBloque().getNombre());
+        reporte.setDesde(desde);
+        reporte.setHasta(hasta);
+        reporte.setFilas(ventas);
+        reporte.setTotalVentas(ventas.size());
+        reporte.setTotalMonto(totalVentas(ventas));
+        return reporte;
     }
 
     //Registra una venta en la jornada abierta de hoy
