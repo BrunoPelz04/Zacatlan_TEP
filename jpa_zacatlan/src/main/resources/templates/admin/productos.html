@@ -14,7 +14,7 @@
         <th:block th:unless="${#lists.isEmpty(productos)}">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0" id="tabla-productos">
-                    <thead class="table-light"><tr><th>Nombre</th><th>Presentación</th><th class="text-end">Precio base</th><th>Vendedores</th><th>Estado</th><th></th></tr></thead>
+                    <thead class="table-light"><tr><th>Nombre</th><th>Presentación</th><th class="text-end">Precio base</th><th>Vendedor</th><th>Estado</th><th></th></tr></thead>
                     <tbody>
                     <tr th:each="p : ${productos}">
                         <td>
@@ -24,8 +24,7 @@
                         <td th:text="${p.presentacion}">1 pieza</td>
                         <td class="text-end" th:text="'$' + ${#numbers.formatDecimal(p.precioBase, 1, 'COMMA', 2, 'POINT')}">$0.00</td>
                         <td>
-                            <span th:if="${#lists.isEmpty(p.vendedorNombres)}" class="form-text m-0">Sin vendedores</span>
-                            <span th:each="n : ${p.vendedorNombres}" class="badge text-bg-light border me-1" th:text="${n}">Vendedor</span>
+                            <span class="badge text-bg-light border" th:text="${p.vendedorNombre}">Vendedor</span>
                         </td>
                         <td><span class="badge rounded-pill" th:classappend="${p.activo} ? 'text-bg-success' : 'text-bg-secondary'" th:text="${p.activo} ? 'Disponible' : 'No disponible'">Disponible</span></td>
                         <td><div class="d-flex flex-wrap justify-content-end gap-2" th:unless="${soloLectura}">

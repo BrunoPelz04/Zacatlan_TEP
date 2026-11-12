@@ -37,18 +37,23 @@
             <p class="form-text mt-2 mb-0">Es el precio inicial; el vendedor puede cambiarlo al momento de la venta.</p>
         </div>
         <div class="mb-3">
-            <label class="form-label" id="etq-vendedores">Vendedores que lo venden</label>
-            <div class="zac-vend-list border rounded p-2 bg-white" role="group" aria-labelledby="etq-vendedores">
-                <div class="form-check zac-vend-item py-1" th:each="v : ${vendedores}">
-                    <input class="form-check-input" type="checkbox" name="vendedorIds" th:id="'vend' + ${v.id}"
-                           th:value="${v.id}" th:checked="${producto.vendedorIds.contains(v.id)}">
-                    <label class="form-check-label" th:for="'vend' + ${v.id}">
-                        <span th:text="${v.nombre}">Vendedor</span>
-                        <span class="form-text m-0" th:text="'· ' + ${v.bloqueNombre} + (${v.activo} ? '' : ' · desactivado')">· Bloque</span>
-                    </label>
-                </div>
-            </div>
-            <p class="form-text mt-2 mb-0">Solo los vendedores marcados verán este producto al registrar ventas.</p>
+            <!-- Crear: se elige el vendedor dueño del producto. Editar: solo se muestra (las ventas ya registradas quedan con su vendedor). -->
+            <th:block th:if="${producto.id == null}">
+                <label class="form-label" for="vendedorId">Vendedor</label>
+                <select class="form-select" id="vendedorId" name="vendedorId" required>
+                    <option value="" th:selected="${producto.vendedorId == null}">Elige un vendedor</option>
+                    <option th:each="v : ${vendedores}" th:value="${v.id}"
+                            th:text="${v.nombre + ' · ' + v.bloqueNombre + (v.activo ? '' : ' · desactivado')}"
+                            th:selected="${v.id == producto.vendedorId}">Vendedor · Bloque</option>
+                </select>
+                <p class="form-text mt-2 mb-0">El producto pertenece a este vendedor y solo él lo verá al registrar ventas.</p>
+            </th:block>
+            <th:block th:unless="${producto.id == null}">
+                <label class="form-label" for="vendedorNombre">Vendedor</label>
+                <input type="hidden" name="vendedorId" th:value="${producto.vendedorId}">
+                <input class="form-control" id="vendedorNombre" type="text" readonly th:value="${producto.vendedorNombre}">
+                <p class="form-text mt-2 mb-0">El vendedor de un producto no se cambia después de crearlo.</p>
+            </th:block>
         </div>
         <div class="form-check mb-4">
             <input class="form-check-input" id="activo" name="activo" type="checkbox" value="true" th:checked="${producto.activo}">

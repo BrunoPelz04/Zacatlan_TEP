@@ -58,7 +58,7 @@ public class InicioController {
         String bloque = u.getBloque() != null ? u.getBloque().getNombre() : null;
 
         session.setAttribute("sesion",
-                new SesionUsuario(u.getNombres(), rol, adminDeBloque, bloque));
+                new SesionUsuario(u.getNombres(), rol, adminDeBloque, bloque, u.getUsuarioId()));
 
         // Redirección según el tipo de usuario
         return esVendedor ? "redirect:/vendedor/ventas" : "redirect:/admin";

@@ -11,6 +11,19 @@ import java.util.List;
 
 public interface VentaRepository extends JpaRepository<VentaEntity, Integer> {
 
+    // ---------- Pantallas del vendedor ----------
+
+    //Ventas de un vendedor en un rango [desde, hasta), la más reciente primero
+    @Query("SELECT v FROM VentaEntity v " +
+            "WHERE v.jornada.usuario.usuarioId = :usuarioId " +
+            "AND v.fecha >= :desde AND v.fecha < :hasta " +
+            "ORDER BY v.fecha DESC")
+    List<VentaEntity> buscar(@Param("usuarioId") Integer usuarioId,
+                             @Param("desde") LocalDateTime desde,
+                             @Param("hasta") LocalDateTime hasta);
+
+    // ---------- Dashboard del admin (ya existían en el proyecto principal) ----------
+
     // Cuántas ventas hubo en el rango
     long countByFechaGreaterThanEqualAndFechaLessThan(LocalDateTime inicio, LocalDateTime fin);
 

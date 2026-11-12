@@ -26,7 +26,8 @@ INSERT INTO usuario (bloque_id, tipo_user_id, nombres, apelli_ma, apelli_pa, act
   (3, 1, 'Daniela', 'Vega', 'Castillo', 1, '2026-02-01 09:10:00', NULL, '7971000010', 'daniela.castillo@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m'),
   (3, 1, 'Héctor', 'Aguilar', 'Rojas', 0, '2026-02-01 09:15:00', '2026-08-31 18:00:00', '7971000011', 'hector.rojas@zacatlan.mx', '$2b$10$nCZN6G7jEsINyPwN48MGgOx/QAttJA9iq9gvm0NiBZZO/32OQZt7m');
 
--- Productos
+-- Productos base (plantilla sin dueño; se copian por vendedor al final del script)
+ALTER TABLE producto MODIFY usuario_id INT NULL;
 INSERT INTO producto (nombre, precio_estimado, cantidad, unidad_medida) VALUES
   ('Jitomate', 28.00, 1.000, 'kg'),
   ('Cebolla blanca', 22.00, 1.000, 'kg'),
@@ -307,6 +308,34 @@ INSERT INTO historial (usuario_id, fecha, accion, descripcion) VALUES
   (2, '2026-09-14 09:45:00', 'editar', 'Se actualizó el teléfono de Daniela Vega Castillo'),
   (4, '2026-10-05 16:20:00', 'crear', 'Se agregó el producto Elote'),
   (1, '2026-11-03 10:15:00', 'eliminar', 'Se eliminó un registro de producto duplicado');
+
+-- =====================================================
+-- Productos por vendedor
+-- Cada producto pertenece a un solo vendedor. Los 12 productos base
+-- (usuario_id NULL) se copian para cada vendedor, cada venta se reasigna
+-- a la copia del vendedor de su jornada y los originales se borran.
+-- Se incluyen vendedores inactivos (Héctor tiene ventas históricas).
+-- =====================================================
+
+-- 1) Una copia de cada producto base por vendedor
+INSERT INTO producto (usuario_id, nombre, precio_estimado, cantidad, unidad_medida)
+SELECT u.usuario_id, p.nombre, p.precio_estimado, p.cantidad, p.unidad_medida
+FROM usuario u
+CROSS JOIN producto p
+WHERE u.tipo_user_id = 1
+  AND p.usuario_id IS NULL;
+
+-- 2) Reasignar cada venta a la copia del vendedor dueño de su jornada
+UPDATE ventas v
+JOIN jornada  j ON j.jornada_id  = v.jornada_id
+JOIN producto o ON o.producto_id = v.producto_id AND o.usuario_id IS NULL
+JOIN producto c ON c.usuario_id  = j.usuario_id  AND c.nombre = o.nombre
+SET v.producto_id = c.producto_id;
+
+-- 3) Borrar los productos base y volver a exigir dueño.
+--    Si alguna venta siguiera apuntando a un original, el DELETE falla por la FK.
+DELETE FROM producto WHERE usuario_id IS NULL;
+ALTER TABLE producto MODIFY usuario_id INT NOT NULL;
 
 -- =====================================================
 -- Consultas de ejemplo para verificar

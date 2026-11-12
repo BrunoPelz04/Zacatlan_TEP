@@ -12,4 +12,5 @@ public class SesionUsuario implements Serializable {
     private String rol;              // "ADMIN" o "VENDEDOR"
     private boolean adminDeBloque;
     private String bloque;           // nombre del bloque, o null
+    private Integer usuarioId;       // id del usuario que inició sesión
 }

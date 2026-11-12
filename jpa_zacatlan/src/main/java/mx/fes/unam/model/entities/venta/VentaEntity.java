@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 public class VentaEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer ventaId;
@@ -28,6 +27,10 @@ public class VentaEntity {
     private JornadaEntity jornada;
 
     private LocalDateTime fecha;
-    private BigDecimal precioFinal;      // total cobrado
-    private BigDecimal cantidad;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal precioFinal;         // TOTAL cobrado en la venta
+
+    @Column(precision = 10, scale = 3)
+    private BigDecimal cantidad;            // admite decimales (1.5 kg)
 }

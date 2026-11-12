@@ -7,12 +7,12 @@ import mx.fes.unam.model.entities.usuario.UsuarioEntity;
 
 import java.time.LocalDateTime;
 
+//Turno de trabajo de un vendedor (fecha_fin NULL = jornada abierta)
 @Entity
 @Table(name = "jornada")
 @Data
 @NoArgsConstructor
 public class JornadaEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer jornadaId;
@@ -22,5 +22,5 @@ public class JornadaEntity {
     private UsuarioEntity usuario;
 
     private LocalDateTime fechaInicio;
-    private LocalDateTime fechaFin;      // null = jornada abierta
+    private LocalDateTime fechaFin;
 }

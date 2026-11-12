@@ -69,16 +69,22 @@ CREATE TABLE usuario (
 
 -- -----------------------------------------------------
 -- Tabla: producto
+-- Cada producto pertenece a UN solo vendedor (usuario_id)
 -- cantidad = presentación base (ej. 1 kg, 1 pza)
 -- precio_estimado = precio sugerido, el vendedor puede cambiarlo en la venta
 -- -----------------------------------------------------
 CREATE TABLE producto (
   producto_id     INT NOT NULL AUTO_INCREMENT,
+  usuario_id      INT NOT NULL,
   nombre          VARCHAR(50) NOT NULL,
   precio_estimado DECIMAL(10,2) NOT NULL,
   cantidad        DECIMAL(10,3) NOT NULL DEFAULT 1,
   unidad_medida   VARCHAR(20) NOT NULL,
   PRIMARY KEY (producto_id),
+  KEY idx_producto_usuario (usuario_id),
+  CONSTRAINT fk_producto_usuario
+    FOREIGN KEY (usuario_id) REFERENCES usuario (usuario_id)
+    ON UPDATE CASCADE ON DELETE RESTRICT,
   CONSTRAINT chk_producto_precio CHECK (precio_estimado >= 0),
   CONSTRAINT chk_producto_cantidad CHECK (cantidad > 0)
 ) ENGINE=InnoDB;
