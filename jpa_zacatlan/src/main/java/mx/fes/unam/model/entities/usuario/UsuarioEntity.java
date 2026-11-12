@@ -24,6 +24,8 @@ public class UsuarioEntity {
 
     private String nombres;
     private String apelliPa;
+    private String apelliMa;
+    private String telefono;
     private Boolean activo;
     private String correo;
     private String passwordHash;
